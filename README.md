@@ -50,4 +50,4 @@ this stuff is worth it, you can buy me a beer in return.      Daniel Bimschas
 ```
 
 ## Disclaimers
-Seriously, this is just a tiny learning project for writing Go code. It just does the most basic things of JSON serialization and file disk access and is in no way a safe way to store passwords. I use it for non-critical site passwords (as I don't want to sync my passwords with any Chrome cloud service) because my disk is encrypted anyway.
+Seriously, this is just a tiny learning project for writing Go code. It just does the most basic things of JSON serialization and file disk access and is in no way a safe way to store passwords. I use it for storing non-critical site passwords as my disk is encrypted anyways and I don't want to sync my passwords with any Chrome cloud service.
