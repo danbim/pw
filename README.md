@@ -1,5 +1,5 @@
 # pw
-## Command-line tool to store and retrieve passwords in a structured JSON file in users home
+#### Command-line tool to store and retrieve passwords in a structured JSON file in users home
 
 Learning Go programming this is one of my first tiny projects. pw stores and retrieves user passwords in ```~/.pw.json```. Run
 
