@@ -99,14 +99,17 @@ func setPassword(key, password, description string, passwords *Passwords) {
 	}
 }
 
-func printPassword(key string, passwords *Passwords) {
+func printPassword(key string, passwords *Passwords) int {
 	if passwords != nil && passwords.Entries != nil && len(passwords.Entries) > 0 {
 		for i := range passwords.Entries {
 			if strings.Contains(passwords.Entries[i].Key, key) {
 				fmt.Printf(passwords.Entries[i].Password)
+				return 0
 			}
 		}
+		return 1
 	}
+	return 1
 }
 
 func main() {
@@ -114,16 +117,21 @@ func main() {
 		fmt.Printf("Usage: pw KEY [PWD]")
 		return
 	}
+
 	passwords := readPwFile()
+	retCode := 0
+
 	if len(os.Args) == 2 {
-		printPassword(os.Args[1], passwords)
+		retCode = printPassword(os.Args[1], passwords)
 	} else if len(os.Args) == 3 {
 		setPassword(os.Args[1], os.Args[2], "", passwords)
-		printPassword(os.Args[1], passwords)
+		retCode = printPassword(os.Args[1], passwords)
 		writePwFile(passwords)
 	} else if len(os.Args) == 4 {
 		setPassword(os.Args[1], os.Args[2], os.Args[3], passwords)
-		printPassword(os.Args[1], passwords)
+		retCode = printPassword(os.Args[1], passwords)
 		writePwFile(passwords)
 	}
+
+	os.Exit(retCode)
 }
