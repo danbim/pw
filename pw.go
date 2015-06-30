@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -112,9 +113,36 @@ func printPassword(key string, passwords *Passwords) int {
 	return 1
 }
 
+func printKeyList(passwords *Passwords) {
+	if passwords != nil && passwords.Entries != nil && len(passwords.Entries) > 0 {
+		maxLen := 0
+		for _, entry := range passwords.Entries {
+			if len(entry.Key) > maxLen {
+				maxLen = len(entry.Key)
+			}
+		}
+		for _, entry := range passwords.Entries {
+			fmt.Printf("%-"+strconv.Itoa(maxLen)+"v", entry.Key)
+			if "" != entry.Description {
+				fmt.Printf(" # %v", entry.Description)
+			}
+			fmt.Printf("\n")
+		}
+	}
+}
+
+type args struct {
+	Key  string
+	Pwd  string
+	Desc string
+}
+
 func main() {
+
 	if len(os.Args) == 1 || len(os.Args) > 4 {
-		fmt.Printf("Usage: pw KEY [PWD]")
+		fmt.Printf("Usage: pw KEY     # prints the password for KEY")
+		fmt.Printf("Usage: pw KEY PWD # sets the password for KEY")
+		fmt.Printf("       pw --list  # prints available keys")
 		return
 	}
 
@@ -122,7 +150,12 @@ func main() {
 	retCode := 0
 
 	if len(os.Args) == 2 {
-		retCode = printPassword(os.Args[1], passwords)
+		if os.Args[1] == "--list" {
+			retCode = 0
+			printKeyList(passwords)
+		} else {
+			retCode = printPassword(os.Args[1], passwords)
+		}
 	} else if len(os.Args) == 3 {
 		setPassword(os.Args[1], os.Args[2], "", passwords)
 		retCode = printPassword(os.Args[1], passwords)
