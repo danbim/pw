@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -113,6 +114,23 @@ func printPassword(key string, passwords *Passwords) int {
 	return 1
 }
 
+func keys(passwords *Passwords) []string {
+	keys := make([]string, len(passwords.Entries))
+	for i, e := range passwords.Entries {
+		keys[i] = e.Key
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+func asMap(passwords *Passwords) map[string]*PasswordsEntry {
+	m := make(map[string]*PasswordsEntry, len(passwords.Entries))
+	for _, e := range passwords.Entries {
+		m[(*e).Key] = e
+	}
+	return m
+}
+
 func printKeyList(passwords *Passwords) {
 	if passwords != nil && passwords.Entries != nil && len(passwords.Entries) > 0 {
 		maxLen := 0
@@ -121,10 +139,14 @@ func printKeyList(passwords *Passwords) {
 				maxLen = len(entry.Key)
 			}
 		}
-		for _, entry := range passwords.Entries {
-			fmt.Printf("%-"+strconv.Itoa(maxLen)+"v", entry.Key)
-			if "" != entry.Description {
-				fmt.Printf(" # %v", entry.Description)
+		keys := keys(passwords)
+		pMap := asMap(passwords)
+		fmt.Printf("%v\n\n", keys)
+		fmt.Printf("%v\n\n", pMap)
+		for _, key := range keys {
+			fmt.Printf("%-"+strconv.Itoa(maxLen)+"v", key)
+			if "" != (*pMap[key]).Description {
+				fmt.Printf(" # %v", (*pMap[key]).Description)
 			}
 			fmt.Printf("\n")
 		}
